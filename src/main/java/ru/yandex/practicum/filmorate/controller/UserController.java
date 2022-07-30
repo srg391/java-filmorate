@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.userexception.*;
 import ru.yandex.practicum.filmorate.model.User;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,30 +31,24 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         if (users.containsKey(user.getEmail())) {
             throw new UserAlreadyExistException("Пользователь с электронной почтой " +
                     user.getEmail() + " уже зарегистрирован!");
         }
         user.setId(generateNewId());
-        log.debug("Добавлен пользователь :" + user);
         validateUser(user);
         save(user);
+        log.debug("Добавлен пользователь :" + user);
         return user;
     }
 
     void validateUser(User user) {
-        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
-            throw new InvalidEmailException("Адрес электронной почты не соотвествует!");
-        }
-        if (user.getLogin() == null || user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(" ")) {
             throw new InvalidLoginException("Логин не соотвествует!");
         }
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
-        }
-        if (user.getBirthday() == null || user.getBirthday().isAfter(LocalDate.now())) {
-            throw new InvalidBirthdayException("Дата рождения не соотвествует!");
         }
     }
 
@@ -62,15 +57,15 @@ public class UserController {
     }
 
     @PutMapping
-    public User putUser(@RequestBody User user) {
+    public User putUser(@Valid @RequestBody User user) {
         if (user.getId() == null) {
             throw new InvalidIdUserException("Id пользователя не может быть пустым!");
         } else if (!users.containsKey(user.getId())) {
             throw new InvalidIdUserException("Пользователь не существует!");
         }
-        log.debug("Изменен пользователь :" + user);
         validateUser(user);
         save(user);
+        log.debug("Изменен пользователь :" + user);
         return user;
     }
 }

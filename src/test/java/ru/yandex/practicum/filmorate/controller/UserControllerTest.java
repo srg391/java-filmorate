@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.userexception.InvalidBirthdayException;
-import ru.yandex.practicum.filmorate.exception.userexception.InvalidEmailException;
 import ru.yandex.practicum.filmorate.exception.userexception.InvalidLoginException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -15,13 +13,6 @@ class UserControllerTest {
     void validateUserLogin() {
         UserController userController = new UserController();
         User user = new User("srg s", "Sergey", 1L, "srg@yandex.ru", LocalDate.of(1987,10,10));
-        assertThrows(InvalidLoginException.class, () -> userController.validateUser(user));
-    }
-
-    @Test
-    void validateUserLoginIsNull() {
-        UserController userController = new UserController();
-        User user = new User(null, "Sergey", 1L, "srg@yandex.ru", LocalDate.of(1987,10,10));
         assertThrows(InvalidLoginException.class, () -> userController.validateUser(user));
     }
 
@@ -40,35 +31,4 @@ class UserControllerTest {
         userController.validateUser(user);
         assertEquals(user.getName(), user.getLogin());
     }
-
-
-    @Test
-    void validateUserEmail() {
-        UserController userController = new UserController();
-        User user = new User("srg", "Sergey", 1L, "srg.yandex.ru", LocalDate.of(1987,10,10));
-        assertThrows(InvalidEmailException.class, () -> userController.validateUser(user));
-    }
-
-    @Test
-    void validateUserEmailIsNull() {
-        UserController userController = new UserController();
-        User user = new User("srg", "Sergey", 1L, null, LocalDate.of(1987,10,10));
-        assertThrows(InvalidEmailException.class, () -> userController.validateUser(user));
-    }
-
-
-    @Test
-    void validateUserDuration() {
-        UserController userController = new UserController();
-        User user = new User("srg", "Sergey", 1L, "srg@yandex.ru", LocalDate.MAX);
-        assertThrows(InvalidBirthdayException.class, () -> userController.validateUser(user));
-    }
-
-    @Test
-    void validateUserDurationIsNull() {
-        UserController userController = new UserController();
-        User user = new User("srg", "Sergey", 1L, "srg@yandex.ru", null);
-        assertThrows(InvalidBirthdayException.class, () -> userController.validateUser(user));
-    }
-
 }

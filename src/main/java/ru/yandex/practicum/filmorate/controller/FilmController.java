@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.filmexception.*;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,31 +30,25 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film createNewFilm(@RequestBody Film film) {
+    public Film createNewFilm(@Valid @RequestBody Film film) {
         if (film.getId() != null) {
             throw new InvalidIdFilmException("Передан фильм с непустым id!");
         } else if (films.containsKey(film.getId())) {
             throw new InvalidIdFilmException("Передан уже существующий фильм!");
         } else {
-            log.debug("Добавлен фильм :" + film);
             film.setId(generateNewId());
             validateFilm(film);
             save(film);
+            log.debug("Добавлен фильм :" + film);
             return film;
         }
     }
     void validateFilm(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
-            throw new InvalidNameException("Название не соотвествует!");
-        }
-        if (film.getDescription() == null || film.getDescription().isBlank() || film.getDescription().length()>200) {
+        if (film.getDescription().length()>200) {
             throw new InvalidDescriptionException("Описание не соотвествует!");
         }
-        if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(RELEASE_MIN)) {
+        if (film.getReleaseDate().isBefore(RELEASE_MIN)) {
             throw new InvalidReleaseDateException("Дата релиза не соотвествует!");
-        }
-        if (film.getDuration() == null || film.getDuration()<0) {
-            throw new InvalidDurationException("Продолжительность не соотвествует!");
         }
     }
 
@@ -62,15 +57,15 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film putFilm(@RequestBody Film film) {
+    public Film putFilm(@Valid @RequestBody Film film) {
         if (film.getId() == null) {
             throw new InvalidIdFilmException("Id фильма не может быть пустым!");
         } else if (!films.containsKey(film.getId())) {
             throw new InvalidIdFilmException("Фильм не существует!");
         }
-        log.debug("Изменен фильм :" + film);
         validateFilm(film);
         save(film);
+        log.debug("Изменен фильм :" + film);
         return film;
     }
 }
