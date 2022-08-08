@@ -1,46 +1,40 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.userexception.*;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-    private final Map<Long, User> users = new HashMap<>();
-    private long idCounter = 0;
-
-    public long generateNewId() {
-        return ++idCounter;
-    }
+    @Autowired
+    UserService userService;
 
     @GetMapping
-    public List<User> findAllUsers() {
-        log.debug("Количество постов :" + users.size());
-        List<User> usersList = new ArrayList<>(users.values());
+    public List<User> getAllUsers() {
+        List<User> usersList = userService.getAllUsers();
+        log.debug("Количество постов :" + usersList.size());
         return usersList;
+    }
+
+    @GetMapping("/{userId}")
+    User getUser(@PathVariable long userId) {
+        return userService.get(userId);
     }
 
     @PostMapping
     public User createUser(@Valid @RequestBody User user) {
-        if (users.containsKey(user.getEmail())) {
-            throw new UserAlreadyExistException("Пользователь с электронной почтой " +
-                    user.getEmail() + " уже зарегистрирован!");
-        }
-        user.setId(generateNewId());
         validateUser(user);
-        save(user);
-        log.debug("Добавлен пользователь :" + user);
-        return user;
+        User savedUser = userService.createUser(user);
+        log.debug("Добавлен пользователь :" + savedUser);
+        return savedUser;
     }
 
     void validateUser(User user) {
@@ -52,21 +46,31 @@ public class UserController {
         }
     }
 
-    void save(User user) {
-        users.put(user.getId(), user);
-    }
-
     @PutMapping
     public User putUser(@Valid @RequestBody User user) {
-        if (user.getId() == null) {
-            throw new InvalidIdUserException("Id пользователя не может быть пустым!");
-        } else if (!users.containsKey(user.getId())) {
-            throw new InvalidIdUserException("Пользователь не существует!");
-        }
         validateUser(user);
-        save(user);
-        log.debug("Изменен пользователь :" + user);
-        return user;
+        User savedUser = userService.putUser(user);
+        log.debug("Изменен пользователь :" + savedUser);
+        return savedUser;
+    }
+
+    @GetMapping("/{userId}/friends")
+    public List<User> getFriends(@PathVariable long userId) {
+        return userService.getFriends(userId);
+    }
+
+    @GetMapping("/{userId}/friends/common/{otherId}")
+    public List<User> getFriendsOtherUser(@PathVariable long userId, @PathVariable long otherId) {
+        return userService.getFriendsOtherUser(userId, otherId);
+    }
+
+    @PutMapping("/{userId}/friends/{friendId}")
+    public void addFriend(@PathVariable long userId, @PathVariable long friendId) {
+        userService.addFriend(userId, friendId);
+    }
+
+    @DeleteMapping("/{userId}/friends/{friendId}")
+    public void deleteFriend(@PathVariable long userId, @PathVariable long friendId) {
     }
 }
 
