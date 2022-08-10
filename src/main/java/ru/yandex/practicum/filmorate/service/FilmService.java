@@ -2,12 +2,12 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.filmexception.InvalidIdFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
@@ -15,15 +15,12 @@ import java.util.*;
 @Service
 public class FilmService {
     @Autowired
-    InMemoryUserStorage inMemoryUserStorage;
+    private UserStorage inMemoryUserStorage;
     @Autowired
-    InMemoryFilmStorage inMemoryFilmStorage;
+    private FilmStorage inMemoryFilmStorage;
 
     public Film getFilm(long filmId) {
         final Film film = inMemoryFilmStorage.getFilm(filmId);
-        if (film == null) {
-            throw new NotFoundException("Фильм c id=" + filmId + " не существует!");
-        }
         return film;
     }
 
@@ -58,12 +55,6 @@ public class FilmService {
     }
 
     public void addLike(long userId, long filmId) {
-        if (!inMemoryFilmStorage.getFilmMap().containsKey(filmId)) {
-            throw new NotFoundException("Фильм c id=" + filmId + " не существует!");
-        }
-        if (!inMemoryUserStorage.getUserMap().containsKey(userId)) {
-            throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
-        }
         Film film = inMemoryFilmStorage.getFilm(filmId);
         if (film.getUserIds().contains(userId)) {
             deleteLike(userId, filmId);
@@ -73,12 +64,6 @@ public class FilmService {
     }
 
     public void deleteLike(long userId, long filmId) {
-        if (!inMemoryFilmStorage.getFilmMap().containsKey(filmId)) {
-            throw new NotFoundException("Фильм c id=" + filmId + " не существует!");
-        }
-        if (!inMemoryUserStorage.getUserMap().containsKey(userId)) {
-            throw new NotFoundException("Пользователь c id=" + userId + "не существует!");
-        }
         Film film = inMemoryFilmStorage.getFilm(filmId);
         User user = inMemoryUserStorage.getUser(userId);
         inMemoryFilmStorage.deleteLike(film, user);
@@ -123,6 +108,7 @@ public class FilmService {
         Comparator<Film> comparator = new CustomComparator(popularFilms);
         Map<Film, Integer> sortedMap = new TreeMap<>(comparator);
         sortedMap.putAll(popularFilms);
+
 
         List<Film> popularFilmsList = new ArrayList<>();
         for (Film film : sortedMap.keySet()) {

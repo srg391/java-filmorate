@@ -7,13 +7,14 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.userexception.InvalidIdUserException;
 import ru.yandex.practicum.filmorate.exception.userexception.UserAlreadyExistException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 
 @Service
 public class UserService {
     @Autowired
-    InMemoryUserStorage inMemoryUserStorage;
+    private UserStorage inMemoryUserStorage;
 
     public List<User> getAllUsers() {
         List<User> usersList = inMemoryUserStorage.getAllUsers();
@@ -74,12 +75,6 @@ public class UserService {
     }
 
     public void deleteFriend(long userId, long friendId) {
-        if (!inMemoryUserStorage.getUserMap().containsKey(userId)) {
-            throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
-        }
-        if (!inMemoryUserStorage.getUserMap().containsKey(friendId)) {
-            throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
-        }
         User user = inMemoryUserStorage.getUser(userId);
         User friend = inMemoryUserStorage.getUser(friendId);
         inMemoryUserStorage.deleteFriend(user, friend);
@@ -103,20 +98,12 @@ public class UserService {
 
     public List<User> getFriendsOtherUser(long userId, long otherId) {
         final User user = inMemoryUserStorage.getUser(userId);
-
-        if (user == null) {
-            throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
-        }
         if (user.getFriendIds().size() == 0) {
             List<User> userFriendsEmpty = new ArrayList<>();
             return userFriendsEmpty;
         }
-
         final User other = inMemoryUserStorage.getUser(otherId);
 
-        if (other == null) {
-            throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
-        }
         if (other.getFriendIds().size() == 0) {
             List<User> userFriendsEmpty = new ArrayList<>();
             return userFriendsEmpty;

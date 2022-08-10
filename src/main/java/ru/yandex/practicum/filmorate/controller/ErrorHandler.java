@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,79 +12,67 @@ import ru.yandex.practicum.filmorate.exception.filmexception.InvalidDurationExce
 import ru.yandex.practicum.filmorate.exception.filmexception.InvalidIdFilmException;
 import ru.yandex.practicum.filmorate.exception.filmexception.InvalidNameFilmException;
 import ru.yandex.practicum.filmorate.exception.userexception.*;
-import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
 @RestControllerAdvice
 @Slf4j
 public class ErrorHandler {
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handelNotFoundException(final NotFoundException e) {
+    public ResponseEntity handelNotFoundException(final NotFoundException e) {
         log.info("404 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handelInvalidIdUserException(final InvalidIdUserException e) {
+    public ResponseEntity handelInvalidIdUserException(final InvalidIdUserException e) {
         log.info("500 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse handelInvalidIdFilmException(final InvalidIdFilmException e) {
+    public ResponseEntity handelInvalidIdFilmException(final InvalidIdFilmException e) {
         log.info("500 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelInvalidBirthdayException(final InvalidBirthdayException e) {
+    public ResponseEntity handelInvalidBirthdayException(final InvalidBirthdayException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelInvalidEmailException(final InvalidEmailException e) {
+    public ResponseEntity handelInvalidEmailException(final InvalidEmailException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelInvalidLoginException(final InvalidLoginException e) {
+    public ResponseEntity handelInvalidLoginException(final InvalidLoginException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelUserAlreadyExistException(final UserAlreadyExistException e) {
+    public ResponseEntity handelUserAlreadyExistException(final UserAlreadyExistException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelInvalidDescriptionException(final InvalidDescriptionException e) {
+    public ResponseEntity handelInvalidDescriptionException(final InvalidDescriptionException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelInvalidDurationException(final InvalidDurationException e) {
+    public ResponseEntity handelInvalidDurationException(final InvalidDurationException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
-
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handelInvalidReleaseDateException(final InvalidNameFilmException e) {
+    public ResponseEntity handelInvalidReleaseDateException(final InvalidNameFilmException e) {
         log.info("400 {}", e.getMessage());
-        return new ErrorResponse(e.getMessage());
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
 
