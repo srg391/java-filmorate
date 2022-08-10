@@ -14,14 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
 
-    @Test
-    void validateFilmDescriptionIsOverSymbols() {
-        UserService userService = new UserService();
-        FilmService filmService = new FilmService();
-        FilmController filmController = new FilmController(userService, filmService);
-        Film film = new Film(1L, "Pirates", "200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200200", LocalDate.of(1986, 5, 8), 124, new HashSet<>());
-        assertThrows(InvalidDescriptionException.class, () -> filmController.validateFilm(film));
-    }
 
     @Test
     void validateFilmReleaseDate() {
