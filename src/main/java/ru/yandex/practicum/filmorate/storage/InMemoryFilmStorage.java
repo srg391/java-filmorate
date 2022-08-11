@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -19,10 +18,9 @@ public class InMemoryFilmStorage implements FilmStorage {
     private long generator = 0;
     private HashMap<Long, Film> filmMap = new HashMap<>();
 
-    public Film getFilm(long filmId) {
+    public Optional<Film> getFilm(long filmId) {
         Optional<Film> filmOptional = Optional.ofNullable(filmMap.get(filmId));
-        Film film = filmOptional.orElseThrow(() -> new NotFoundException("Фильм c id=" + filmId + " не существует!"));
-        return film;
+        return filmOptional;
     }
 
     public List<Film> getAllFilms() {

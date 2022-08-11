@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.ArrayList;
@@ -18,10 +17,9 @@ public class InMemoryUserStorage implements UserStorage{
     private long generator = 0;
     private HashMap<Long, User> userMap = new HashMap<>();
 
-    public User getUser(long userId) {
+    public Optional<User> getUser(long userId) {
         Optional<User> userOptional = Optional.ofNullable(userMap.get(userId));
-        User user = userOptional.orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
-        return user;
+        return userOptional;
     }
 
     public List<User> getAllUsers() {

@@ -5,9 +5,10 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage {
-    public Film getFilm(long filmId);
+    public Optional<Film> getFilm(long filmId);
 
     public HashMap<Long, Film> getFilmMap();
 

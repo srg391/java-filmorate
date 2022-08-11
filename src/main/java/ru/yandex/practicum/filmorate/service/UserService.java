@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.userexception.InvalidIdUserException;
@@ -10,6 +11,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -26,7 +28,7 @@ public class UserService {
     }
 
     public User get(long userId) {
-        final User user = inMemoryUserStorage.getUser(userId);
+        final User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
         if (user == null) {
             throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
         }
@@ -66,22 +68,22 @@ public class UserService {
         if (!inMemoryUserStorage.getUserMap().containsKey(friendId)) {
             throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
         }
-        User user = inMemoryUserStorage.getUser(userId);
+        User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
         if (user.getFriendIds().contains(friendId)) {
             deleteFriend(userId, friendId);
         }
-        User friend = inMemoryUserStorage.getUser(friendId);
+        User friend = inMemoryUserStorage.getUser(friendId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
         inMemoryUserStorage.addFriend(user, friend);
     }
 
     public void deleteFriend(long userId, long friendId) {
-        User user = inMemoryUserStorage.getUser(userId);
-        User friend = inMemoryUserStorage.getUser(friendId);
+        User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
+        User friend = inMemoryUserStorage.getUser(friendId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
         inMemoryUserStorage.deleteFriend(user, friend);
     }
 
     public List<User> getFriends(long userId) {
-        final User user = inMemoryUserStorage.getUser(userId);
+        final User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
         if (user == null) {
             throw new NotFoundException("Пользователь c id=" + userId + " не существует!");
         }
@@ -91,52 +93,21 @@ public class UserService {
         }
         List<User> userFriends = new ArrayList<>();
         for (long l : user.getFriendIds()) {
-            userFriends.add(inMemoryUserStorage.getUser(l));
+            userFriends.add(inMemoryUserStorage.getUser(l).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!")));
         }
         return userFriends;
     }
 
     public List<User> getFriendsOtherUser(long userId, long otherId) {
-        final User user = inMemoryUserStorage.getUser(userId);
-        if (user.getFriendIds().size() == 0) {
-            List<User> userFriendsEmpty = new ArrayList<>();
-            return userFriendsEmpty;
-        }
-        final User other = inMemoryUserStorage.getUser(otherId);
+        final User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
+        List<Long> userFriends = new ArrayList<>(user.getFriendIds());
+        final User other = inMemoryUserStorage.getUser(otherId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
+        List<Long> overFriends = new ArrayList<>(other.getFriendIds());
 
-        if (other.getFriendIds().size() == 0) {
-            List<User> userFriendsEmpty = new ArrayList<>();
-            return userFriendsEmpty;
-        }
-
-        List<Long> userFriends = new ArrayList<>();
-        for (long l : user.getFriendIds()) {
-            userFriends.add(l);
-        }
-        Collections.sort(userFriends);
-
-        List<Long> otherFriends = new ArrayList<>();
-        for (long l : other.getFriendIds()) {
-            otherFriends.add(l);
-        }
-        Collections.sort(otherFriends);
-
-        List<User> jointFriends = new ArrayList<>();
-        if (userFriends.size() > otherFriends.size()) {
-            for (int i = 0; i < userFriends.size(); i++) {
-                if (userFriends.contains(otherFriends.get(i))) {
-                    jointFriends.add(inMemoryUserStorage.getUser(userFriends.get(i)));
-                }
-            }
-        }
-        if (otherFriends.size() >= userFriends.size()) {
-            for (int i = 0; i < otherFriends.size(); i++) {
-                if (otherFriends.contains(userFriends.get(i))) {
-                    jointFriends.add(inMemoryUserStorage.getUser(otherFriends.get(i)));
-                }
-            }
-        }
-        return jointFriends;
+        return (overFriends.stream()
+                .filter(userFriends::contains)
+                .map(inMemoryUserStorage.getUserMap()::get)
+                .collect(Collectors.toList()));
     }
 }
 
