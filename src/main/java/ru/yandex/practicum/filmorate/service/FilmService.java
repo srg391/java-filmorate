@@ -7,17 +7,15 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.filmexception.InvalidIdFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @Service
 public class FilmService {
     @Autowired
-    private UserStorage inMemoryUserStorage;
+    private UserService userService;
     @Autowired
     private FilmStorage inMemoryFilmStorage;
 
@@ -57,33 +55,26 @@ public class FilmService {
     }
 
     public void addLike(long userId, long filmId) {
-        Film film = inMemoryFilmStorage.getFilm(filmId).orElseThrow(() -> new NotFoundException("Фильм c id=" + filmId + " не существует!"));
+        Film film = getFilm(filmId);
         if (film.getUserIds().contains(userId)) {
             deleteLike(userId, filmId);
         }
-        User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
+        User user = userService.getUser(userId);
         inMemoryFilmStorage.addLike(film, user);
     }
 
     public void deleteLike(long userId, long filmId) {
-        Film film = inMemoryFilmStorage.getFilm(filmId).orElseThrow(() -> new NotFoundException("Фильм c id=" + filmId + " не существует!"));
-        User user = inMemoryUserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
+        Film film = getFilm(filmId);
+        User user = userService.getUser(userId);
         inMemoryFilmStorage.deleteLike(film, user);
     }
 
 
     public List<Film> getPopularFilms(Integer count) {
-        int countPopularFilms = 0;
-        if (count == null) {
-            countPopularFilms = 10;
-            } else {
-            countPopularFilms = count;
-        }
-
         List<Film> popularFilmList = new ArrayList<>(inMemoryFilmStorage.getFilmMap().values());
         return (popularFilmList.stream()
                 .sorted(new FilmComparator())
-                .limit(countPopularFilms)
+                .limit(count)
                 .collect(Collectors.toList()));
     }
 }
