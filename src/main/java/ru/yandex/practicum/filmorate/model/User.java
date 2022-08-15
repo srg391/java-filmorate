@@ -15,13 +15,13 @@ import java.util.Set;
 @AllArgsConstructor
 @RequiredArgsConstructor
 public class User {
-    @NotBlank(message = "Логин не соотвествует!")
-    private String login;
-    private String name;
     private Long id;
     @NotBlank(message = "Адрес электронной почты не соотвествует!")
     @Email(message = "Адрес электронной почты не соотвествует!")
     private String email;
+    @NotBlank(message = "Логин не соотвествует!")
+    private String login;
+    private String name;
     @NotNull(message = "Дата рождения не соотвествует!")
     @PastOrPresent(message = "Дата рождения не соотвествует!")
     private LocalDate birthday;

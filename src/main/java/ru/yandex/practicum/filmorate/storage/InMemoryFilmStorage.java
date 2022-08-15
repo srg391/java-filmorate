@@ -28,21 +28,36 @@ public class InMemoryFilmStorage implements FilmStorage {
         return filmsList;
     }
 
-    public Long generateFilmId(Film film) {
-        film.setId(++generator);
-        return film.getId();
-    }
+//    public Long generateFilmId(Film film) {
+//        film.setId(++generator);
+//        return film.getId();
+//    }
 
     public Film saveFilm(Film film) {
         filmMap.put(film.getId(), film);
         return film;
     }
 
-    public void addLike(Film film, User user) {
-        film.getUserIds().add(user.getId());
+    @Override
+    public List<Film> getPopularFilms(int count) {
+        return null;
     }
 
-    public void deleteLike(Film film, User user) {
-        film.getUserIds().remove(user.getId());
+    @Override
+    public Film update(Film film) {
+        return null;
     }
+
+    @Override
+    public void clear() {
+
+    }
+
+//    public void addLike(Film film, User user) {
+//        film.getUserIds().add(user.getId());
+//    }
+
+//    public void deleteLike(Film film, User user) {
+//        film.getUserIds().remove(user.getId());
+//    }
 }
