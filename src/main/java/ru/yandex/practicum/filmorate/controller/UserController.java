@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.userexception.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.UserService;
+import ru.yandex.practicum.filmorate.controller.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -14,7 +14,6 @@ import java.util.List;
 @RequestMapping("/users")
 @Slf4j
 public class UserController {
-
 
     private final UserService userService;
     @Autowired

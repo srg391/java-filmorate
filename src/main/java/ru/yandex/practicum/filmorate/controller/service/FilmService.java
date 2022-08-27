@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.controller.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,8 @@ public class FilmService {
     private FilmStorage filmStorage;
 
     public Film getFilm(long filmId) {
-        final Film film = filmStorage.getFilm(filmId).orElseThrow(() -> new NotFoundException("Фильм c id=" + filmId + " не существует!"));
+        final Film film = filmStorage.getFilm(filmId)
+                .orElseThrow(() -> new NotFoundException("Фильм c id=" + filmId + " не существует!"));
         return film;
     }
 

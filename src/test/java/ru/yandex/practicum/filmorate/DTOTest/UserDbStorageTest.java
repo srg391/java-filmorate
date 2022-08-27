@@ -21,7 +21,7 @@ public class UserDbStorageTest {
 
 
     @Test
-    void create() {
+    void createNewUserTest() {
         User user = new User(
                 0L,
                 "sergey@mail.ru",
@@ -35,7 +35,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    void update() {
+    void updateExistingUserTest() {
         User user = new User(
                 1L,
                 "vasiliy@mail.ru",
@@ -53,7 +53,7 @@ public class UserDbStorageTest {
     }
 
     @Test
-    void getById() {
+    void getUserByIdTest() {
 
         assertTrue(storage.getUser(1L).isPresent());
 

@@ -23,7 +23,7 @@ class FilmDbStorageTest {
 
 
     @Test
-    void create() {
+    void createNewFilmTest() {
         Film film = new Film(
                 0L,
                 "Pirates",
@@ -39,7 +39,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void update() {
+    void updateExistingFilmTest() {
         Film film = new Film(
                 1L,
                 "Pirates New",
@@ -59,7 +59,7 @@ class FilmDbStorageTest {
     }
 
     @Test
-    void getById() {
+    void getFilmByIdTest() {
 
         assertTrue(storage.getFilm(1L).isPresent());
 

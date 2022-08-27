@@ -10,19 +10,12 @@ import java.util.Optional;
 public interface FilmStorage {
     public Optional<Film> getFilm(long filmId);
 
-//    public HashMap<Long, Film> getFilmMap();
-
     public List<Film> getAllFilms();
-
-//    public Long generateFilmId(Film film);
 
     public Film saveFilm(Film film);
 
     public List<Film> getPopularFilms(int count);
 
-//    public void addLike(Film film, User user);
-//
-//    public void deleteLike(Film film, User user);
     public  Film update(Film film);
     public void clear();
 }
