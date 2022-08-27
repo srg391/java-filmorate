@@ -22,6 +22,7 @@ public class UserDbStorageTest {
 
     @Test
     void createNewUserTest() {
+
         User user = new User(
                 0L,
                 "sergey@mail.ru",
@@ -36,7 +37,19 @@ public class UserDbStorageTest {
 
     @Test
     void updateExistingUserTest() {
+
         User user = new User(
+                0L,
+                "sergey@mail.ru",
+                "serega",
+                "Sergey",
+                LocalDate.of(1998, 3, 5),
+                new HashSet<>()
+        );
+
+        storage.saveUser(user);
+
+        User user1 = new User(
                 1L,
                 "vasiliy@mail.ru",
                 "vasia",
@@ -45,7 +58,7 @@ public class UserDbStorageTest {
                 new HashSet<>()
         );
 
-        assertTrue(storage.update(user).getName().equals("Vasiliy"));
+        assertTrue(storage.update(user1).getName().equals("Vasiliy"));
 
         user.setId(300L);
 
@@ -54,6 +67,17 @@ public class UserDbStorageTest {
 
     @Test
     void getUserByIdTest() {
+
+        User user = new User(
+                0L,
+                "sergeys@mail.ru",
+                "seregas",
+                "Sergey",
+                LocalDate.of(1998, 3, 5),
+                new HashSet<>()
+        );
+
+        storage.saveUser(user);
 
         assertTrue(storage.getUser(1L).isPresent());
 

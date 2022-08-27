@@ -21,7 +21,6 @@ class FilmDbStorageTest {
     @Autowired
     private FilmStorage storage;
 
-
     @Test
     void createNewFilmTest() {
         Film film = new Film(
@@ -41,6 +40,19 @@ class FilmDbStorageTest {
     @Test
     void updateExistingFilmTest() {
         Film film = new Film(
+                0L,
+                "Pirates",
+                "About pirates",
+                LocalDate.of(1986, 5, 8),
+                110,
+                new Mpa(3),
+                new HashSet<>(),
+                new LinkedHashSet<>()
+        );
+
+        storage.saveFilm(film);
+
+        Film film1 = new Film(
                 1L,
                 "Pirates New",
                 "About asian pirates",
@@ -51,7 +63,7 @@ class FilmDbStorageTest {
                 new LinkedHashSet<>()
         );
 
-        assertTrue(storage.update(film).getName().equals("Pirates New"));
+        assertTrue(storage.update(film1).getName().equals("Pirates New"));
 
         film.setId(300L);
 
@@ -60,6 +72,19 @@ class FilmDbStorageTest {
 
     @Test
     void getFilmByIdTest() {
+
+        Film film = new Film(
+                0L,
+                "Pirates",
+                "About pirates",
+                LocalDate.of(1986, 5, 8),
+                110,
+                new Mpa(3),
+                new HashSet<>(),
+                new LinkedHashSet<>()
+        );
+
+        storage.saveFilm(film);
 
         assertTrue(storage.getFilm(1L).isPresent());
 

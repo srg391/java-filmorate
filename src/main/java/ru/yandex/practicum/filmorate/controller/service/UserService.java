@@ -26,7 +26,8 @@ public class UserService {
     }
 
     public User getUser(long userId) {
-        final User user = UserStorage.getUser(userId).orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
+        final User user = UserStorage.getUser(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь c id=" + userId + " не существует!"));
         return user;
     }
 

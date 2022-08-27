@@ -23,7 +23,7 @@ public class MpaController {
 
     @GetMapping
     public List<Mpa> getAllMpa() {
-        return  mpaService.getAll();
+        return mpaService.getAll();
     }
 
     @GetMapping(value = "/{id}")
